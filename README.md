@@ -16,7 +16,7 @@ npm run build
 
 `site/` contains the complete static site, images and app catalog. `scripts/build.mjs` copies it to `dist/`. All URLs are relative, including the JSON catalog, so project-path hosting works. The initial gallery has Daylight; scene artwork is explicitly labelled as illustration, not a device screenshot. No analytics, external fonts, account system or browser-side authenticated GitHub requests.
 
-The deployment workflow builds, tests and publishes on main changes, manual dispatch, and release changes. **One-time setup:** Repository Settings → Pages → Build and deployment → Source → GitHub Actions. Then run **Publish gallery**. The connector used to prepare this repo cannot change Pages settings.
+The deployment workflow builds, tests and publishes on main changes and manual dispatch. Release changes queue a workflow dispatch on main, so deployment does not require allowing release tags through the github-pages environment rules. **One-time setup:** Repository Settings → Pages → Build and deployment → Source → GitHub Actions. Then run **Publish gallery**. The connector used to prepare this repo cannot change Pages settings.
 
 ## App entries
 
