@@ -1,0 +1,16 @@
+{
+  "apps": [{
+    "id": "daylight",
+    "name": "Daylight",
+    "tagline": "A little weather. A little wonder.",
+    "description": "Your sky, with a little company. Live weather meets a companion that changes with the world around you.",
+    "category": "Weather",
+    "platform": "Android",
+    "minimumAndroid": "8.0",
+    "packageName": "com.liquidsynthetics.daylight",
+    "icon": "assets/daylight-icon.svg",
+    "artwork": "assets/daylight-day.svg",
+    "releasePrefix": "daylight-v",
+    "release": null
+  }]
+}
