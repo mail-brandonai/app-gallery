@@ -2,6 +2,8 @@
 
 Independent Android apps by Liquid Synthetics. Public showcase for **mail-brandonai/app-gallery**, designed for GitHub Pages at `https://mail-brandonai.github.io/app-gallery/` once Pages is enabled.
 
+![Desktop gallery preview](preview.jpg)
+
 ## Local development
 
 Node 22+, no install or dependencies required:
