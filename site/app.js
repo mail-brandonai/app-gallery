@@ -54,9 +54,7 @@ function applyRelease(app) {
   document.querySelector('#download-meta').textContent = `v${release.version} · ${size} · Android ${app.minimumAndroid}+`;
   document.querySelector('#release-fact').replaceChildren(document.createTextNode('Version '), Object.assign(document.createElement('strong'), { textContent: release.version }));
   document.querySelector('#release-title').textContent = `Daylight ${release.version}`;
-  document.querySelector('#release-description').textContent = `Signed APK · ${size}. Download directly from our GitHub Releases. Install future updates over your existing installation to retain progress.`;
-  document.querySelector('#release-link').href = release.url;
-  document.querySelector('#release-link').textContent = 'Release notes ↗';
+  document.querySelector('#release-description').textContent = `Signed APK · ${size}. Download the APK using the button above. Install future updates over your existing installation to retain progress.`;
   if (/^[a-f0-9]{64}$/i.test(release.checksum || '')) {
     document.querySelector('#checksum-block').hidden = false;
     document.querySelector('#checksum').textContent = release.checksum;
@@ -75,5 +73,5 @@ try {
   apps = catalog.apps;
   filter(); applyRelease(apps.find(app => app.id === 'daylight'));
 } catch {
-  document.querySelector('#catalog-status').textContent = 'Release information is unavailable. You can check GitHub Releases for published downloads.';
+  document.querySelector('#catalog-status').textContent = 'Release information is unavailable. Please refresh the page or try again later.';
 }
