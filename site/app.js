@@ -48,6 +48,7 @@ for (const view of details) {
   download.addEventListener('click', event => {
     if (download.getAttribute('aria-disabled') === 'true') {
       event.preventDefault(); field(view, 'release-title').closest('section').scrollIntoView();
+      if (navigator.onLine) loadCatalog();
     }
   });
   field(view, 'copy-checksum').addEventListener('click', async () => {
@@ -76,13 +77,54 @@ function applyRelease(app) {
   }
 }
 route(); filter();
-try {
-  const response = await fetch('data/apps.json', { cache: 'no-store' });
-  if (!response.ok) throw new Error('Catalog unavailable');
-  const catalog = await response.json();
-  if (!Array.isArray(catalog.apps)) throw new Error('Invalid catalog');
-  apps = catalog.apps;
-  filter(); apps.forEach(applyRelease); route();
-} catch {
-  document.querySelector('#catalog-status').textContent = 'Release information is unavailable. Please refresh the page or try again later.';
+let catalogRequest = 0;
+function disableDownloads(message) {
+  for (const view of details) {
+    const download = field(view, 'download-button');
+    download.setAttribute('aria-disabled', 'true');
+    download.href = view.dataset.detail === 'daylight' ? '#release-info' : '#ascent-release-info';
+    download.textContent = navigator.onLine ? 'Check connection' : 'Connect to download';
+    field(view, 'download-meta').textContent = message;
+    field(view, 'checksum-block').hidden = true;
+    field(view, 'release-description').textContent = 'Connect to check the latest release and download the APK. You can still explore this app offline.';
+    field(view, 'release-fact').textContent = 'Availability — connect to check';
+  }
 }
+async function loadCatalog() {
+  const requestId = ++catalogRequest;
+  const status = document.querySelector('#catalog-status');
+  disableDownloads('Checking current releases…');
+  if (!navigator.onLine) {
+    status.textContent = 'Offline — connect to check releases and download apps.';
+    disableDownloads('Connect to check current releases.');
+    return;
+  }
+  try {
+    const response = await fetch('data/apps.json', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error('Catalog unavailable');
+    const catalog = await response.json();
+    if (!Array.isArray(catalog.apps)) throw new Error('Invalid catalog');
+    if (requestId !== catalogRequest || !navigator.onLine) return;
+    apps = catalog.apps;
+    for (const view of details) {
+      field(view, 'download-button').textContent = 'APK coming soon';
+      field(view, 'download-meta').textContent = 'First signed release in preparation';
+      field(view, 'release-description').textContent = 'The first signed APK is in preparation. A download will appear when a verified release is available.';
+      field(view, 'release-fact').textContent = 'Availability — preview';
+    }
+    status.textContent = '';
+    filter(); apps.forEach(applyRelease);
+  } catch {
+    if (requestId !== catalogRequest) return;
+    status.textContent = 'Release information is unavailable. Check your connection and try again.';
+    disableDownloads('Connect to check current releases.');
+  }
+}
+window.addEventListener('offline', () => {
+  ++catalogRequest;
+  disableDownloads('Connect to check current releases.');
+  document.querySelector('#catalog-status').textContent = 'Offline — connect to check releases and download apps.';
+});
+window.addEventListener('online', loadCatalog);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') loadCatalog(); });
+await loadCatalog();

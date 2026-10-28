@@ -1,4 +1,5 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { prepareOfflineShell } from './pwa.mjs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { syncReleases, validateCatalog } from './catalog.mjs';
@@ -18,4 +19,8 @@ await rm(resolve(root, 'dist'), { recursive: true, force: true });
 await mkdir(resolve(root, 'dist'), { recursive: true });
 await cp(resolve(root, 'site'), resolve(root, 'dist'), { recursive: true });
 await writeFile(resolve(root, 'dist/data/apps.json'), JSON.stringify(catalog, null, 2) + '\n');
+const { version, precache, html, worker } = await prepareOfflineShell(resolve(root, 'site'));
+await writeFile(resolve(root, 'dist/index.html'), html);
+await writeFile(resolve(root, 'dist/sw.js'), worker);
+console.log(`Offline shell ${version}: ${precache.length} resources. Release metadata and APKs are never cached.`);
 console.log(`Built ${catalog.apps.length} app listing(s). ${catalog.apps.filter(app => app.release).length} downloadable release(s).`);

@@ -52,3 +52,15 @@ Website images are optimized SVG illustrations served by Pages. `scripts/create-
 ## Ascent
 
 The catalog now also contains Ascent, the local AI workspace. Its public release tag prefix is `ascent-v` and its APK asset must be named `ascent.apk`. The Ascent repository signs the APK using its own signing secrets, publishes a private backup, and uploads the public release here using `APP_GALLERY_RELEASE_TOKEN`. The existing release event workflow redeploys Pages from main. Until that verified release exists, Ascent's detail page shows the preparation state without a download link. Daylight retains its independent tags and download.
+
+## Progressive web app
+
+The Gallery is installable on supported browsers, with a standalone window, its own Gallery icons and an Apple home-screen icon. The manifest and worker use relative URLs, so the same build works at the custom-domain root or the GitHub Pages repository path. No hosting migration or server is required.
+
+The browser’s install prompt appears only after the user clicks **Install App Gallery**, when the browser supplies that capability. Manual browser-menu and Safari instructions are available under **Install Gallery**. Installation does not install the Android apps, request notifications, or add any account/telemetry service.
+
+The service worker precaches the Gallery document, scripts, styles, manifest and artwork. It never intercepts/caches APKs, external URLs, release metadata or unknown files. The catalog remains network-only; unavailable/offline releases disable downloads and explicitly ask users to reconnect. Reconnection and returning to a visible tab recheck release availability. Previously opened shell content is available offline after the first successful connected visit; downloads require a connection. Browsers may evict offline storage.
+
+`npm run build` hashes all shell inputs, versions script/style URLs and generates the worker’s immutable cache and precache list. New workers download the complete new shell before offering **Update Gallery**; accepting activates it and reloads controlled tabs. Old Gallery caches are removed after activation. Release-only deployments update network metadata without forcing a shell update. Refreshing a visible tab also checks for an updated worker.
+
+Validation: `npm test` covers manifest/icon dimensions, root and repository-path worker scope, offline navigation and assets, exclusion of catalog/APKs, and cache activation/update behavior. Real home-screen installation should also be checked on Android Chrome and iOS Safari; browser installation support differs.
