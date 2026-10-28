@@ -1,22 +1,24 @@
 const home = document.querySelector('#home-view');
-const detail = document.querySelector('#detail-view');
+const details = [...document.querySelectorAll('[data-detail]')];
 const search = document.querySelector('#search');
 let category = 'all';
-let apps = [{ id: 'daylight', name: 'Daylight', category: 'Weather', description: 'Weather with a companion', release: null }];
-let previousRoute = null;
+let apps = [...document.querySelectorAll('[data-app]')].map(card => ({ id: card.dataset.app, name: card.querySelector('h3').textContent, category: card.dataset.app === 'daylight' ? 'Weather' : 'Productivity', description: card.textContent, release: null }));
+let previousApp = null;
 function route() {
   const hash = location.hash;
-  const details = hash === '#app/daylight' || hash === '#daylight-features' || hash === '#release-info';
-  home.hidden = details;
-  detail.hidden = !details;
-  document.title = details ? 'Daylight — App Gallery' : 'App Gallery — Liquid Synthetics';
-  if (hash === '#app/daylight' && previousRoute !== hash) { window.scrollTo({ top: 0, behavior: 'instant' }); }
-  else if (hash && hash !== '#') { requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView()); }
-  else window.scrollTo({ top: 0, behavior: 'instant' });
-  if (previousRoute !== null && (details !== previousRoute.startsWith('#app/') && hash === '#app/daylight')) {
-    const heading = detail.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
-  }
-  previousRoute = hash;
+  const appId = hash.startsWith('#app/') ? hash.slice(5) : hash.startsWith('#ascent-') ? 'ascent' : ['#daylight-features', '#release-info'].includes(hash) ? 'daylight' : null;
+  const selected = details.find(view => view.dataset.detail === appId);
+  home.hidden = !!selected;
+  for (const view of details) view.hidden = view !== selected;
+  const name = apps.find(app => app.id === appId)?.name;
+  document.title = selected && name ? `${name} — App Gallery` : 'App Gallery — Liquid Synthetics';
+  if (selected && previousApp !== appId) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    const heading = selected.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
+  } else if (hash && !hash.startsWith('#app/')) {
+    requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView());
+  } else window.scrollTo({ top: 0, behavior: 'instant' });
+  previousApp = selected ? appId : null;
 }
 function filter() {
   const query = search.value.trim().toLocaleLowerCase();
@@ -40,38 +42,47 @@ search.addEventListener('input', filter);
 document.querySelector('#reset-search').addEventListener('click', resetSearch);
 for (const button of document.querySelectorAll('[data-category]')) button.addEventListener('click', () => { category = button.dataset.category; updateFilters(); filter(); });
 window.addEventListener('hashchange', route);
-const download = document.querySelector('#download-button');
-download.addEventListener('click', event => { if (download.getAttribute('aria-disabled') === 'true') { event.preventDefault(); document.querySelector('#release-info').scrollIntoView(); } });
+function field(view, name) { return view.querySelector(`[data-release="${name}"]`); }
+for (const view of details) {
+  const download = field(view, 'download-button');
+  download.addEventListener('click', event => {
+    if (download.getAttribute('aria-disabled') === 'true') {
+      event.preventDefault(); field(view, 'release-title').closest('section').scrollIntoView();
+    }
+  });
+  field(view, 'copy-checksum').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(field(view, 'checksum').textContent); field(view, 'copy-status').textContent = 'Copied'; }
+    catch { field(view, 'copy-status').textContent = 'Select and copy the checksum above.'; }
+  });
+}
 function applyRelease(app) {
-  const release = app?.release;
-  if (!release) return;
+  const view = details.find(view => view.dataset.detail === app.id);
+  const release = app.release;
+  if (!view || !release) return;
   const prefix = 'https://github.com/mail-brandonai/app-gallery/releases/';
-  if (!release.downloadUrl?.startsWith(prefix) || !release.url?.startsWith(prefix) || !release.downloadUrl.endsWith('.apk')) return;
+  if (!release.downloadUrl?.startsWith(prefix) || !release.url?.startsWith(prefix) || !release.downloadUrl.endsWith(`/${app.id}.apk`) || !(release.size > 0)) return;
+  const download = field(view, 'download-button');
   download.href = release.downloadUrl;
   download.removeAttribute('aria-disabled');
   download.textContent = 'Download APK ↓';
   const size = `${(release.size / 1024 / 1024).toFixed(1)} MB`;
-  document.querySelector('#download-meta').textContent = `v${release.version} · ${size} · Android ${app.minimumAndroid}+`;
-  document.querySelector('#release-fact').replaceChildren(document.createTextNode('Version '), Object.assign(document.createElement('strong'), { textContent: release.version }));
-  document.querySelector('#release-title').textContent = `Daylight ${release.version}`;
-  document.querySelector('#release-description').textContent = `Signed APK · ${size}. Download the APK using the button above. Install future updates over your existing installation to retain progress.`;
+  field(view, 'download-meta').textContent = `v${release.version} · ${size} · Android ${app.minimumAndroid}+`;
+  field(view, 'release-fact').replaceChildren(document.createTextNode('Version '), Object.assign(document.createElement('strong'), { textContent: release.version }));
+  field(view, 'release-title').textContent = `${app.name} ${release.version}`;
+  field(view, 'release-description').textContent = `Signed APK · ${size}. Download the APK using the button above. Install future compatible updates over your existing release installation to retain saved data.`;
   if (/^[a-f0-9]{64}$/i.test(release.checksum || '')) {
-    document.querySelector('#checksum-block').hidden = false;
-    document.querySelector('#checksum').textContent = release.checksum;
+    field(view, 'checksum-block').hidden = false;
+    field(view, 'checksum').textContent = release.checksum;
   }
 }
-document.querySelector('#copy-checksum').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText(document.querySelector('#checksum').textContent); document.querySelector('#copy-status').textContent = 'Copied'; }
-  catch { document.querySelector('#copy-status').textContent = 'Select and copy the checksum above.'; }
-});
-route();
+route(); filter();
 try {
   const response = await fetch('data/apps.json');
   if (!response.ok) throw new Error('Catalog unavailable');
   const catalog = await response.json();
   if (!Array.isArray(catalog.apps)) throw new Error('Invalid catalog');
   apps = catalog.apps;
-  filter(); applyRelease(apps.find(app => app.id === 'daylight'));
+  filter(); apps.forEach(applyRelease); route();
 } catch {
   document.querySelector('#catalog-status').textContent = 'Release information is unavailable. Please refresh the page or try again later.';
 }

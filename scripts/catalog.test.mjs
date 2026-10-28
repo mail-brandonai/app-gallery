@@ -22,3 +22,16 @@ test('all catalog assets exist', async () => {
  const data = JSON.parse(await readFile(new URL('../site/data/apps.json', import.meta.url), 'utf8')); validateCatalog(data);
  for (const app of data.apps) for (const path of [app.icon, app.artwork]) await readFile(new URL(`../site/${path}`, import.meta.url));
 });
+test('Daylight and Ascent select independent APKs and checksums', () => {
+ const data = catalog();
+ data.apps.push({...data.apps[0], id:'ascent', name:'Ascent', releasePrefix:'ascent-v'});
+ const ascent = release('ascent-v0.2.0', { assets:[{ name:'ascent.apk', state:'uploaded', size:5000, browser_download_url:'https://github.com/mail-brandonai/app-gallery/releases/download/ascent-v0.2.0/ascent.apk', digest:'sha256:'+'a'.repeat(64) }] });
+ syncReleases(data, [release('daylight-v0.1.0'), ascent]); validateCatalog(data);
+ assert.equal(data.apps[0].release.version, '0.1.0');
+ assert.ok(data.apps[0].release.downloadUrl.endsWith('/daylight.apk'));
+ assert.equal(data.apps[1].release.version, '0.2.0');
+ assert.ok(data.apps[1].release.downloadUrl.endsWith('/ascent.apk'));
+ assert.equal(data.apps[1].release.checksum, 'a'.repeat(64));
+ syncReleases(data, [release('daylight-v0.1.0')]);
+ assert.ok(data.apps[0].release); assert.equal(data.apps[1].release, null);
+});

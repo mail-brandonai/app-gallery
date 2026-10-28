@@ -48,3 +48,7 @@ Local builds use the checked-in catalog without remote discovery. CI fetches rel
 Daylight has **no signed public APK release yet**, so its download control currently explains that the release is in preparation. No debug APK is advertised as a production build.
 
 Website images are optimized SVG illustrations served by Pages. `scripts/create-art.py` reproduces them without external dependencies. Real screenshots can replace the illustrations when captured from a release build, with the labels updated to match.
+
+## Ascent
+
+The catalog now also contains Ascent, the local AI workspace. Its public release tag prefix is `ascent-v` and its APK asset must be named `ascent.apk`. The Ascent repository signs the APK using its own signing secrets, publishes a private backup, and uploads the public release here using `APP_GALLERY_RELEASE_TOKEN`. The existing release event workflow redeploys Pages from main. Until that verified release exists, Ascent's detail page shows the preparation state without a download link. Daylight retains its independent tags and download.

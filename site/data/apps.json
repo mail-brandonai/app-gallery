@@ -1,16 +1,32 @@
 {
-  "apps": [{
-    "id": "daylight",
-    "name": "Daylight",
-    "tagline": "A little weather. A little wonder.",
-    "description": "Your sky, with a little company. Live weather meets a companion that changes with the world around you.",
-    "category": "Weather",
-    "platform": "Android",
-    "minimumAndroid": "8.0",
-    "packageName": "com.liquidsynthetics.daylight",
-    "icon": "assets/daylight-icon.svg",
-    "artwork": "assets/daylight-day.svg",
-    "releasePrefix": "daylight-v",
-    "release": null
-  }]
+  "apps": [
+    {
+      "id": "daylight",
+      "name": "Daylight",
+      "tagline": "A little weather. A little wonder.",
+      "description": "Your sky, with a little company. Live weather meets a companion that changes with the world around you.",
+      "category": "Weather",
+      "platform": "Android",
+      "minimumAndroid": "8.0",
+      "packageName": "com.liquidsynthetics.daylight",
+      "icon": "assets/daylight-icon.svg",
+      "artwork": "assets/daylight-day.svg",
+      "releasePrefix": "daylight-v",
+      "release": null
+    },
+    {
+      "id": "ascent",
+      "name": "Ascent",
+      "tagline": "A little intelligence. All yours.",
+      "description": "A local AI workspace for summaries, writing, image descriptions and short audio transcripts. Powered by an optional on-device Gemma model.",
+      "category": "Productivity",
+      "platform": "Android",
+      "minimumAndroid": "8.0",
+      "packageName": "com.liquidsynthetics.ascent",
+      "icon": "assets/ascent-icon.svg",
+      "artwork": "assets/ascent-feature.svg",
+      "releasePrefix": "ascent-v",
+      "release": null
+    }
+  ]
 }
