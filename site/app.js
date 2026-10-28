@@ -77,7 +77,7 @@ function applyRelease(app) {
 }
 route(); filter();
 try {
-  const response = await fetch('data/apps.json');
+  const response = await fetch('data/apps.json', { cache: 'no-store' });
   if (!response.ok) throw new Error('Catalog unavailable');
   const catalog = await response.json();
   if (!Array.isArray(catalog.apps)) throw new Error('Invalid catalog');
