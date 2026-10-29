@@ -35,3 +35,25 @@ test('Daylight and Ascent select independent APKs and checksums', () => {
  syncReleases(data, [release('daylight-v0.1.0')]);
  assert.ok(data.apps[0].release); assert.equal(data.apps[1].release, null);
 });
+
+test('Zooom discovers only its own uploaded APK among all three gallery apps', async () => {
+ const data = JSON.parse(await readFile(new URL('../site/data/apps.json', import.meta.url), 'utf8'));
+ const apps = ['daylight', 'ascent', 'zooom'];
+ const releases = apps.map((id, index) => ({
+  tag_name: `${id}-v0.1.0`, published_at: '2026-10-29T18:00:00Z',
+  html_url: `https://github.com/mail-brandonai/app-gallery/releases/tag/${id}-v0.1.0`,
+  assets: [{name:`${id}.apk`, state:'uploaded', size:1000+index,
+   browser_download_url:`https://github.com/mail-brandonai/app-gallery/releases/download/${id}-v0.1.0/${id}.apk`,
+   digest:'sha256:'+String(index).repeat(64)}],
+ }));
+ syncReleases(data, releases); validateCatalog(data);
+ for (const [index, id] of apps.entries()) {
+  const app = data.apps.find(app => app.id === id);
+  assert.equal(app.release.size, 1000+index);
+  assert.ok(app.release.downloadUrl.endsWith(`/${id}.apk`));
+ }
+ syncReleases(data, releases.filter(release => !release.tag_name.startsWith('zooom-v')));
+ assert.equal(data.apps.find(app => app.id === 'zooom').release, null);
+ assert.ok(data.apps.find(app => app.id === 'daylight').release);
+ assert.ok(data.apps.find(app => app.id === 'ascent').release);
+});

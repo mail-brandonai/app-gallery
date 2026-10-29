@@ -2,11 +2,12 @@ const home = document.querySelector('#home-view');
 const details = [...document.querySelectorAll('[data-detail]')];
 const search = document.querySelector('#search');
 let category = 'all';
-let apps = [...document.querySelectorAll('[data-app]')].map(card => ({ id: card.dataset.app, name: card.querySelector('h3').textContent, category: card.dataset.app === 'daylight' ? 'Weather' : 'Productivity', description: card.textContent, release: null }));
+let apps = [...document.querySelectorAll('[data-app]')].map(card => ({ id: card.dataset.app, name: card.querySelector('h3').textContent, category: card.dataset.appCategory, description: card.textContent, release: null }));
 let previousApp = null;
 function route() {
   const hash = location.hash;
-  const appId = hash.startsWith('#app/') ? hash.slice(5) : hash.startsWith('#ascent-') ? 'ascent' : ['#daylight-features', '#release-info'].includes(hash) ? 'daylight' : null;
+  const anchor = document.getElementById(hash.slice(1));
+  const appId = hash.startsWith('#app/') ? hash.slice(5) : anchor?.closest('[data-detail]')?.dataset.detail ?? null;
   const selected = details.find(view => view.dataset.detail === appId);
   home.hidden = !!selected;
   for (const view of details) view.hidden = view !== selected;
@@ -82,7 +83,7 @@ function disableDownloads(message) {
   for (const view of details) {
     const download = field(view, 'download-button');
     download.setAttribute('aria-disabled', 'true');
-    download.href = view.dataset.detail === 'daylight' ? '#release-info' : '#ascent-release-info';
+    download.href = view.dataset.releaseAnchor;
     download.textContent = navigator.onLine ? 'Check connection' : 'Connect to download';
     field(view, 'download-meta').textContent = message;
     field(view, 'checksum-block').hidden = true;
