@@ -47,7 +47,7 @@ Local builds use the checked-in catalog without remote discovery. CI fetches rel
 
 Daylight has **no signed public APK release yet**, so its download control currently explains that the release is in preparation. No debug APK is advertised as a production build.
 
-Website images are optimized SVG illustrations served by Pages. `scripts/create-art.py` reproduces them without external dependencies. Real screenshots can replace the illustrations when captured from a release build, with the labels updated to match.
+Website images are optimized SVG illustrations and WebP artwork served by Pages. `scripts/create-art.py` reproduces them without external dependencies. Real screenshots can replace the illustrations when captured from a release build, with the labels updated to match.
 
 ## Ascent
 
@@ -64,3 +64,9 @@ The service worker precaches the Gallery document, scripts, styles, manifest and
 `npm run build` hashes all shell inputs, versions script/style URLs and generates the worker’s immutable cache and precache list. New workers download the complete new shell before offering **Update Gallery**; accepting activates it and reloads controlled tabs. Old Gallery caches are removed after activation. Release-only deployments update network metadata without forcing a shell update. Refreshing a visible tab also checks for an updated worker.
 
 Validation: `npm test` covers manifest/icon dimensions, root and repository-path worker scope, offline navigation and assets, exclusion of catalog/APKs, and cache activation/update behavior. Real home-screen installation should also be checked on Android Chrome and iOS Safari; browser installation support differs.
+
+## Zooom!
+
+Zooom! is an offline Flutter/Flame creature arena with Snake, Eel and Millipede characters, saved collections, local records and built-in bots. Its independent release prefix is `zooom-v`, with the signed download named `zooom.apk`. Android 8.0+ and ARM64 or x86-64 are required. The source repository signs its successfully checked release build using its own keystore secrets and publishes with `APP_GALLERY_RELEASE_TOKEN`.
+
+The Games card and detail page use the actual bundled racing illustration, optimized to WebP, and an SVG adaptation of the Android launcher vector. Artwork is labelled as illustration, not a gameplay screenshot. Original art provenance remains documented in the private source repository. Gallery download discovery, checksums, offline browsing and update behavior apply independently to Zooom!, Daylight and Ascent. Filters and in-page routing use each app's metadata rather than a two-app fallback.

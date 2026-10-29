@@ -8,7 +8,7 @@ export function validateCatalog(catalog) {
     for (const field of ['name', 'description', 'minimumAndroid', 'releasePrefix', 'icon', 'artwork']) {
       if (typeof app[field] !== 'string' || !app[field]) throw new Error(`Missing ${field}`);
     }
-    for (const path of [app.icon, app.artwork]) if (!/^assets\/[a-z0-9-]+\.svg$/.test(path)) throw new Error('Unsafe asset path');
+    for (const path of [app.icon, app.artwork]) if (!/^assets\/[a-z0-9-]+\.(?:svg|webp)$/.test(path)) throw new Error('Unsafe asset path');
     if (app.release) {
       for (const url of [app.release.url, app.release.downloadUrl]) if (!url?.startsWith(origin)) throw new Error('Unexpected release URL');
       if (!app.release.downloadUrl.endsWith('.apk') || !(app.release.size > 0)) throw new Error('Invalid APK metadata');

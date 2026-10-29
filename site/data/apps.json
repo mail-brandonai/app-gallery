@@ -27,6 +27,20 @@
       "artwork": "assets/ascent-feature.svg",
       "releasePrefix": "ascent-v",
       "release": null
+    },
+    {
+      "id": "zooom",
+      "name": "Zooom!",
+      "tagline": "Small creatures. Big zoom.",
+      "description": "A friendly offline creature arena. Collect food, grow and boost past tactical bots as a Snake, Eel or Millipede.",
+      "category": "Games",
+      "platform": "Android",
+      "minimumAndroid": "8.0",
+      "packageName": "com.liquidsynthetics.zooom",
+      "icon": "assets/zooom-icon.svg",
+      "artwork": "assets/zooom-feature.webp",
+      "releasePrefix": "zooom-v",
+      "release": null
     }
   ]
 }
