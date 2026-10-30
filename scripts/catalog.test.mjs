@@ -57,3 +57,15 @@ test('Zooom discovers only its own uploaded APK among all three gallery apps', a
  assert.ok(data.apps.find(app => app.id === 'daylight').release);
  assert.ok(data.apps.find(app => app.id === 'ascent').release);
 });
+
+test('Mozart has complete routing and independent signed-release discovery', async () => {
+ const data = JSON.parse(await readFile(new URL('../site/data/apps.json', import.meta.url), 'utf8'));
+ const html = await readFile(new URL('../site/index.html', import.meta.url), 'utf8');
+ const app = data.apps.find(app => app.id === 'mozart');
+ assert.equal(app.releasePrefix, 'mozart-v');
+ assert.match(html, /data-app="mozart"/); assert.match(html, /data-detail="mozart"/); assert.match(html, /data-category="Music"/);
+ const release = {tag_name:'mozart-v0.1.0', published_at:'2026-10-31T00:00:00Z', html_url:'https://github.com/mail-brandonai/app-gallery/releases/tag/mozart-v0.1.0', assets:[{name:'mozart.apk', state:'uploaded', size:1000, browser_download_url:'https://github.com/mail-brandonai/app-gallery/releases/download/mozart-v0.1.0/mozart.apk', digest:'sha256:'+'f'.repeat(64)}]};
+ syncReleases(data, [release]); validateCatalog(data);
+ assert.equal(app.release.version, '0.1.0'); assert.equal(app.release.checksum, 'f'.repeat(64));
+ assert.ok(data.apps.filter(app => app.id !== 'mozart').every(app => app.release === null));
+});

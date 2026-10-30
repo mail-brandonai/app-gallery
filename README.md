@@ -70,3 +70,9 @@ Validation: `npm test` covers manifest/icon dimensions, root and repository-path
 Zooom! is an offline Flutter/Flame creature arena with Snake, Eel and Millipede characters, saved collections, local records and built-in bots. Its independent release prefix is `zooom-v`, with the signed download named `zooom.apk`. Android 8.0+ and ARM64 or x86-64 are required. The source repository signs its successfully checked release build using its own keystore secrets and publishes with `APP_GALLERY_RELEASE_TOKEN`.
 
 The Games card and detail page use the actual bundled racing illustration, optimized to WebP, and an SVG adaptation of the Android launcher vector. Artwork is labelled as illustration, not a gameplay screenshot. Original art provenance remains documented in the private source repository. Gallery download discovery, checksums, offline browsing and update behavior apply independently to Zooom!, Daylight and Ascent. Filters and in-page routing use each app's metadata rather than a two-app fallback.
+
+## Mozart
+
+Mozart is an offline native Android music studio with a tablet-first arrangement/editor workspace, original instrument families, a twelve-pad kit, piano-roll editing, Live performance, track automation, mixer effects and WAV/MIDI/stem/project export. It uses the independent `mozart-v` release prefix and a verified signed asset named `mozart.apk`. Android 8.0+ and ARM64 or x86-64 are required. The source repository owns its signing identity and publishes with `APP_GALLERY_RELEASE_TOKEN`.
+
+The Gallery uses Mozart's original vector launcher master and an explicitly labelled vector studio illustration, not an invented device screenshot. Downloads, checksums and offline behavior are discovered independently from the other apps.

@@ -41,6 +41,20 @@
       "artwork": "assets/zooom-feature.webp",
       "releasePrefix": "zooom-v",
       "release": null
+    },
+    {
+      "id": "mozart",
+      "name": "Mozart",
+      "tagline": "Small ideas. Full arrangements.",
+      "description": "An offline music studio for layering instruments, composing patterns and performing full arrangements. Made for tablets, ready for phones.",
+      "category": "Music",
+      "platform": "Android",
+      "minimumAndroid": "8.0",
+      "packageName": "com.liquidsynthetics.mozart",
+      "icon": "assets/mozart-icon.svg",
+      "artwork": "assets/mozart-feature.svg",
+      "releasePrefix": "mozart-v",
+      "release": null
     }
   ]
 }
