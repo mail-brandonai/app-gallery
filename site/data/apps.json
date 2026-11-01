@@ -55,6 +55,20 @@
       "artwork": "assets/mozart-feature.svg",
       "releasePrefix": "mozart-v",
       "release": null
+    },
+    {
+      "id": "psst",
+      "name": "Psst",
+      "tagline": "Just between us.",
+      "description": "Account-free peer-to-peer text messaging, with ratcheted direct chats, managed groups and optional self-hosted offline mailboxes.",
+      "category": "Communication",
+      "platform": "Android",
+      "minimumAndroid": "10",
+      "packageName": "com.liquidsynthetics.psst",
+      "icon": "assets/psst-icon.svg",
+      "artwork": "assets/psst-feature.svg",
+      "releasePrefix": "psst-v",
+      "release": null
     }
   ]
 }

@@ -69,3 +69,14 @@ test('Mozart has complete routing and independent signed-release discovery', asy
  assert.equal(app.release.version, '0.1.0'); assert.equal(app.release.checksum, 'f'.repeat(64));
  assert.ok(data.apps.filter(app => app.id !== 'mozart').every(app => app.release === null));
 });
+
+test('Psst has identity-based messaging routing and its own signed download', async () => {
+ const data = JSON.parse(await readFile(new URL('../site/data/apps.json', import.meta.url), 'utf8'));
+ const html = await readFile(new URL('../site/index.html', import.meta.url), 'utf8');
+ const app = data.apps.find(a => a.id === 'psst');
+ assert.equal(app.minimumAndroid, '10'); assert.equal(app.releasePrefix, 'psst-v');
+ assert.match(html, /data-app="psst"/); assert.match(html, /data-detail="psst"/); assert.match(html, /data-category="Communication"/);
+ syncReleases(data, [{tag_name:'psst-v0.1.0',published_at:'2026-11-01T00:00:00Z',html_url:'https://github.com/mail-brandonai/app-gallery/releases/tag/psst-v0.1.0',assets:[{name:'psst.apk',state:'uploaded',size:1000,browser_download_url:'https://github.com/mail-brandonai/app-gallery/releases/download/psst-v0.1.0/psst.apk',digest:'sha256:'+'f'.repeat(64)}]}]);
+ validateCatalog(data); assert.equal(app.release.version,'0.1.0'); assert.ok(app.release.downloadUrl.endsWith('/psst.apk'));
+ assert.ok(data.apps.filter(a => a.id !== 'psst').every(a => a.release === null));
+});
