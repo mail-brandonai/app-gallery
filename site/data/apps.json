@@ -60,7 +60,7 @@
       "id": "psst",
       "name": "Psst",
       "tagline": "Just between us.",
-      "description": "Account-free peer-to-peer text messaging, with ratcheted direct chats, managed groups and optional self-hosted offline mailboxes.",
+      "description": "Account-free peer-to-peer messaging, with secure direct chats, managed groups and optional encrypted offline delivery through the shared Psst network.",
       "category": "Communication",
       "platform": "Android",
       "minimumAndroid": "10",
